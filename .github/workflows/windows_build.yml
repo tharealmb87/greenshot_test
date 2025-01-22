@@ -1,0 +1,25 @@
+name: Windows Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Restore dependencies
+        run: nuget restore src/Greenshot.sln
+
+      - name: Build Solution
+        run: msbuild src/Greenshot.sln /p:Configuration=Release
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Greenshot-Build
+          path: src/bin/Release
